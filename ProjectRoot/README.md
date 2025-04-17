@@ -13,10 +13,10 @@ IP_Project/
 ## Team Organization
 
 Following the Chief Programmer Team methodology:
-- Chief Programmer: [TBD]
-- Backup Programmer: [TBD]
-- Project Secretary: [TBD]
-- Team Members: [TBD]
+- Chief Programmer: Ghenciu Alexandru
+- Backup Programmer: Godeanu Viki
+- Project Secretary: Duicu Nicoleta
+- Team Members: Dumitrescu Iasmina, Gabor Andrei, Ghilezan Madalin, Goagara Bianca, Gligor Narth
 
 ## Project Timeline
 
