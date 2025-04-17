@@ -1,0 +1,13 @@
+com\yourorg\api\controllers\PacientiController.class
+com\yourorg\api\controllers\AlarmeController.class
+com\yourorg\api\service\IngrijitorService.class
+com\yourorg\api\model\Ingrijitor.class
+com\yourorg\api\controllers\IstoricPacientiController.class
+com\yourorg\api\controllers\MediciController.class
+com\yourorg\api\repository\IngrijitorRepository.class
+com\yourorg\api\controllers\SemneVitaleController.class
+com\yourorg\api\controllers\SupraveghetoriController.class
+com\yourorg\api\ApiApplication.class
+com\yourorg\api\controllers\IngrijitoriController.class
+com\yourorg\api\controllers\UtilizatoriController.class
+com\yourorg\api\controllers\AdministratoriController.class
