@@ -1,13 +1,13 @@
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\AdministratoriController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\IngrijitoriController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\AlarmeController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\model\Ingrijitor.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\PacientiController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\service\IngrijitorService.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\SemneVitaleController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\IstoricPacientiController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\repository\IngrijitorRepository.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\SupraveghetoriController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\ApiApplication.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\MediciController.java
-E:\Repo IP\proiect-ip\ProjectRoot\cloud\api\src\main\java\com\yourorg\api\controllers\UtilizatoriController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/ApiApplication.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/AdministratoriController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/PacientiController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/MediciController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/IstoricPacientiController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/IngrijitoriController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/UtilizatoriController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/AlarmeController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/service/IngrijitorService.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/SemneVitaleController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/controllers/SupraveghetoriController.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/repository/IngrijitorRepository.java
+/home/iasmi/Documents/GitHub/proiect-ip/ProjectRoot/cloud/api/src/main/java/com/yourorg/api/model/Ingrijitor.java
