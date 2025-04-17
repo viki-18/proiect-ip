@@ -9,8 +9,15 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=default
+      - spring.datasource.url=jdbc:mysql://mysql_db:3306/mydb
+      - spring.datasource.username=newuser
+      - spring.datasource.password=newpassword
+      - spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+      - spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+      - spring.jpa.hibernate.ddl-auto=update
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
   database:
     image: mysql:8
@@ -18,10 +25,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: newuser
+      MYSQL_PASSWORD: newpassword
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db_data:
