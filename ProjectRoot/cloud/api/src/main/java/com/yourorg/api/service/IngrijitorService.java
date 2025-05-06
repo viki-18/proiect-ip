@@ -18,7 +18,7 @@ public class IngrijitorService {
         return repository.findAll();
     }
 
-    public Optional<Ingrijitor> getIngrijitorById(Long id) {
+    public Optional<Ingrijitor> getIngrijitorById(Integer id) {
         return repository.findById(id);
     }
 
@@ -26,12 +26,22 @@ public class IngrijitorService {
         return repository.save(ingrijitor);
     }
 
-    public Ingrijitor updateIngrijitor(Long id, Ingrijitor ingrijitor) {
-        ingrijitor.setId(id);
+    public Ingrijitor updateIngrijitor(Integer id, Ingrijitor ingrijitor) {
+        ingrijitor.setIdIngrijitor(id);
         return repository.save(ingrijitor);
     }
 
-    public void deleteIngrijitor(Long id) {
+    public void deleteIngrijitor(Integer id) {
         repository.deleteById(id);
+    }
+    
+    public boolean sendToExternalSystem(Ingrijitor ingrijitor, String target) {
+        // Here would be the logic to send data to external systems
+        // For now, we're just returning true to simulate success
+        String name = ingrijitor.getUtilizator() != null ? 
+                      "Email: " + ingrijitor.getUtilizator().getEmail() : 
+                      "ID: " + ingrijitor.getIdIngrijitor();
+        System.out.println("Sending ingrijitor " + name + " data to " + target);
+        return true;
     }
 }
