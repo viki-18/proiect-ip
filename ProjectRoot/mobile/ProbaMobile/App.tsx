@@ -1,24 +1,21 @@
 // App.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import WelcomeScreen from './screens/WelcomeScreen';
+import LoginScreen from './screens/LoginScreen';
+
+const Stack = createStackNavigator();
 
 const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hello, User!</Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1 as const,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-  },
-  text: {
-    fontSize: 24,
-  },
-});
 
 export default App;
