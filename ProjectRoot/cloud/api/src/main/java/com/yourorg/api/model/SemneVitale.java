@@ -11,7 +11,7 @@ import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Semne_Vitale")
+@Table(name = "Semne_Vitale", schema = "mydb")
 public class SemneVitale {
 
     @Id
@@ -30,27 +30,42 @@ public class SemneVitale {
     @Column(name = "val_alarma_puls")
     private Integer valAlarmaPuls;
     
+    @Column(name = "val_alarma_puls_min")
+    private Integer valAlarmaPulsMin;
+    
     @Column(name = "tensiune_arteriala")
     private Integer tensiuneArteriala;
     
     @Column(name = "val_alarma_tensiune")
     private Integer valAlarmaTensiune;
     
+    @Column(name = "val_alarma_tensiune_min")
+    private Integer valAlarmaTensiuneMin;
+    
     @Column(name = "temperatura_corporala")
-    private Float temperaturaCoporala;
+    private Float temperaturaCorporala;
     
     @Column(name = "val_alarma_temperatura")
     private Float valAlarmaTemperatura;
+    
+    @Column(name = "val_alarma_temperatura_min")
+    private Float valAlarmaTemperaturaMin;
     
     private Float greutate;
     
     @Column(name = "val_alarma_greutate")
     private Float valAlarmaGreutate;
     
+    @Column(name = "val_alarma_greutate_min")
+    private Float valAlarmaGreutateMin;
+    
     private Float glicemie;
     
     @Column(name = "val_alarma_glicemie")
     private Float valAlarmaGlicemie;
+    
+    @Column(name = "val_alarma_glicemie_min")
+    private Float valAlarmaGlicemieMin;
     
     private Boolean lumina;
     
@@ -62,6 +77,9 @@ public class SemneVitale {
     
     @Column(name = "val_alarma_temperatura_amb")
     private Float valAlarmaTemperaturaAmb;
+    
+    @Column(name = "val_alarma_temperatura_amb_min")
+    private Float valAlarmaTemperaturaAmbMin;
     
     private Boolean gaz;
     
@@ -124,6 +142,14 @@ public class SemneVitale {
         this.valAlarmaPuls = valAlarmaPuls;
     }
 
+    public Integer getValAlarmaPulsMin() {
+        return valAlarmaPulsMin;
+    }
+
+    public void setValAlarmaPulsMin(Integer valAlarmaPulsMin) {
+        this.valAlarmaPulsMin = valAlarmaPulsMin;
+    }
+
     public Integer getTensiuneArteriala() {
         return tensiuneArteriala;
     }
@@ -140,12 +166,20 @@ public class SemneVitale {
         this.valAlarmaTensiune = valAlarmaTensiune;
     }
 
-    public Float getTemperaturaCoporala() {
-        return temperaturaCoporala;
+    public Integer getValAlarmaTensiuneMin() {
+        return valAlarmaTensiuneMin;
     }
 
-    public void setTemperaturaCoporala(Float temperaturaCoporala) {
-        this.temperaturaCoporala = temperaturaCoporala;
+    public void setValAlarmaTensiuneMin(Integer valAlarmaTensiuneMin) {
+        this.valAlarmaTensiuneMin = valAlarmaTensiuneMin;
+    }
+
+    public Float getTemperaturaCorporala() {
+        return temperaturaCorporala;
+    }
+
+    public void setTemperaturaCorporala(Float temperaturaCorporala) {
+        this.temperaturaCorporala = temperaturaCorporala;
     }
 
     public Float getValAlarmaTemperatura() {
@@ -154,6 +188,14 @@ public class SemneVitale {
 
     public void setValAlarmaTemperatura(Float valAlarmaTemperatura) {
         this.valAlarmaTemperatura = valAlarmaTemperatura;
+    }
+
+    public Float getValAlarmaTemperaturaMin() {
+        return valAlarmaTemperaturaMin;
+    }
+
+    public void setValAlarmaTemperaturaMin(Float valAlarmaTemperaturaMin) {
+        this.valAlarmaTemperaturaMin = valAlarmaTemperaturaMin;
     }
 
     public Float getGreutate() {
@@ -172,6 +214,14 @@ public class SemneVitale {
         this.valAlarmaGreutate = valAlarmaGreutate;
     }
 
+    public Float getValAlarmaGreutateMin() {
+        return valAlarmaGreutateMin;
+    }
+
+    public void setValAlarmaGreutateMin(Float valAlarmaGreutateMin) {
+        this.valAlarmaGreutateMin = valAlarmaGreutateMin;
+    }
+
     public Float getGlicemie() {
         return glicemie;
     }
@@ -186,6 +236,14 @@ public class SemneVitale {
 
     public void setValAlarmaGlicemie(Float valAlarmaGlicemie) {
         this.valAlarmaGlicemie = valAlarmaGlicemie;
+    }
+
+    public Float getValAlarmaGlicemieMin() {
+        return valAlarmaGlicemieMin;
+    }
+
+    public void setValAlarmaGlicemieMin(Float valAlarmaGlicemieMin) {
+        this.valAlarmaGlicemieMin = valAlarmaGlicemieMin;
     }
 
     public Boolean getLumina() {
@@ -218,6 +276,14 @@ public class SemneVitale {
 
     public void setValAlarmaTemperaturaAmb(Float valAlarmaTemperaturaAmb) {
         this.valAlarmaTemperaturaAmb = valAlarmaTemperaturaAmb;
+    }
+
+    public Float getValAlarmaTemperaturaAmbMin() {
+        return valAlarmaTemperaturaAmbMin;
+    }
+
+    public void setValAlarmaTemperaturaAmbMin(Float valAlarmaTemperaturaAmbMin) {
+        this.valAlarmaTemperaturaAmbMin = valAlarmaTemperaturaAmbMin;
     }
 
     public Boolean getGaz() {

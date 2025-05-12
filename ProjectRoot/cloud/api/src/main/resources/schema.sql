@@ -1,6 +1,7 @@
 -- Drop tables if they exist (in reverse order to avoid foreign key constraint violations)
 DROP TABLE IF EXISTS Istoric_Pacienti;
 DROP TABLE IF EXISTS Alarme;
+DROP TABLE IF EXISTS Alarm_Events;
 DROP TABLE IF EXISTS Semne_Vitale;
 DROP TABLE IF EXISTS Pacienti;
 DROP TABLE IF EXISTS Supraveghetori;
@@ -72,18 +73,24 @@ CREATE TABLE Semne_Vitale (
     id_pacient INT NOT NULL,
     puls INT,
     val_alarma_puls INT,
+    val_alarma_puls_min INT,
     tensiune_arteriala INT,
     val_alarma_tensiune INT,
+    val_alarma_tensiune_min INT,
     temperatura_corporala FLOAT,
     val_alarma_temperatura FLOAT,
+    val_alarma_temperatura_min FLOAT,
     greutate FLOAT,
     val_alarma_greutate FLOAT,
+    val_alarma_greutate_min FLOAT,
     glicemie FLOAT,
     val_alarma_glicemie FLOAT,
+    val_alarma_glicemie_min FLOAT,
     lumina BOOLEAN,
     val_alarma_lumina BOOLEAN,
     temperatura_ambientala FLOAT,
     val_alarma_temperatura_amb FLOAT,
+    val_alarma_temperatura_amb_min FLOAT,
     gaz BOOLEAN,
     val_alarma_gaz BOOLEAN,
     umiditate BOOLEAN,
@@ -91,6 +98,19 @@ CREATE TABLE Semne_Vitale (
     proximitate BOOLEAN,
     val_alarma_proximitate BOOLEAN,
     data_inregistrare TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_pacient) REFERENCES Pacienti(id_pacient)
+);
+
+-- Create Alarm_Events table for storing alarm events
+CREATE TABLE Alarm_Events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_pacient INT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    message VARCHAR(255) NOT NULL,
+    current_value VARCHAR(50),
+    threshold_value VARCHAR(50),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    acknowledged BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_pacient) REFERENCES Pacienti(id_pacient)
 );
 
