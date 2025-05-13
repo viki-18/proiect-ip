@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "Pacienti", schema = "mydb")
+@Table(name = "Pacienti")
 public class Pacient {
 
     @Id
