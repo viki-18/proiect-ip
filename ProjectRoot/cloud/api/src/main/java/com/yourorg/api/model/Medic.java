@@ -10,13 +10,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "Ingrijitori", schema = "mydb")
-public class Ingrijitor {
+@Table(name = "Medici", schema = "mydb")
+public class Medic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_ingrijitor")
-    private Integer idIngrijitor;
+    @Column(name = "id_medic")
+    private Integer idMedic;
     
     @Column(name = "id", nullable = false)
     private Integer utilizatorId;
@@ -25,20 +25,20 @@ public class Ingrijitor {
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     private Utilizator utilizator;
 
-    public Ingrijitor() {
+    public Medic() {
     }
 
-    public Ingrijitor(Integer idIngrijitor, Integer utilizatorId) {
-        this.idIngrijitor = idIngrijitor;
+    public Medic(Integer idMedic, Integer utilizatorId) {
+        this.idMedic = idMedic;
         this.utilizatorId = utilizatorId;
     }
 
-    public Integer getIdIngrijitor() {
-        return idIngrijitor;
+    public Integer getIdMedic() {
+        return idMedic;
     }
 
-    public void setIdIngrijitor(Integer idIngrijitor) {
-        this.idIngrijitor = idIngrijitor;
+    public void setIdMedic(Integer idMedic) {
+        this.idMedic = idMedic;
     }
 
     public Integer getUtilizatorId() {
@@ -56,4 +56,4 @@ public class Ingrijitor {
     public void setUtilizator(Utilizator utilizator) {
         this.utilizator = utilizator;
     }
-}
+} 
