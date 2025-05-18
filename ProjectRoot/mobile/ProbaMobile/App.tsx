@@ -1,24 +1,38 @@
 // App.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const App: React.FC = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hello, User!</Text>
-    </View>
-  );
+import WelcomeScreen from './screens/WelcomeScreen';
+import LoginScreen from './screens/LoginScreen';
+import LoginFormScreen from './screens/LoginFormScreen';
+import RegisterFormScreen from './screens/RegisterFormScreen';
+
+export type RootStackParamList = {
+  Welcome: undefined;
+  Login: undefined;
+  LoginForm: undefined;
+  RegisterForm: undefined;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1 as const,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-  },
-  text: {
-    fontSize: 24,
-  },
-});
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Welcome"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="LoginForm" component={LoginFormScreen} />
+        <Stack.Screen name="RegisterForm" component={RegisterFormScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 export default App;
