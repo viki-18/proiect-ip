@@ -7,36 +7,36 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import authService from '../services/authService';
 
 type RootStackParamList = {
-  Login: undefined;
+  LoginForm: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const { height } = Dimensions.get('window');
 
-const registerSchema = Yup.object().shape({
+const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
     .email('Email invalid')
     .required('Email-ul este obligatoriu'),
 });
 
-const RegisterFormScreen: React.FC = () => {
+const ForgotPasswordScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = async (values: { email: string }) => {
+  const handleSubmit = async (values: { email: string }) => {
     try {
       setIsLoading(true);
-      await authService.register(values.email);
+      await authService.forgotPassword(values.email);
       Alert.alert(
         'Succes',
-        'Cererea de înregistrare a fost trimisă. Vei primi credențialele pe email.'
+        'Link-ul de resetare a parolei a fost trimis pe email.'
       );
-      navigation.navigate('Login');
+      navigation.navigate('LoginForm');
     } catch (error: any) {
       Alert.alert(
         'Eroare',
-        error.response?.data?.message || 'A apărut o eroare la înregistrare'
+        error.response?.data?.message || 'A apărut o eroare la trimiterea link-ului de resetare'
       );
     } finally {
       setIsLoading(false);
@@ -47,13 +47,13 @@ const RegisterFormScreen: React.FC = () => {
     <View style={styles.container}>
       <Image source={require('../assets/images/fundal_welcome.png')} style={styles.background} resizeMode="cover" />
       <View style={styles.overlay}>
-        <Text style={styles.title}>Înregistrare</Text>
-        <Text style={styles.subtitle}>Vei primi credențiale pe mail</Text>
+        <Text style={styles.title}>Resetare Parolă</Text>
+        <Text style={styles.subtitle}>Introdu adresa de email pentru a primi link-ul de resetare</Text>
         
         <Formik
           initialValues={{ email: '' }}
-          validationSchema={registerSchema}
-          onSubmit={handleRegister}
+          validationSchema={forgotPasswordSchema}
+          onSubmit={handleSubmit}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={styles.formContainer}>
@@ -80,7 +80,7 @@ const RegisterFormScreen: React.FC = () => {
                 disabled={isLoading}
               >
                 <Text style={styles.buttonText}>
-                  {isLoading ? 'Se procesează...' : 'Trimite Cerere'}
+                  {isLoading ? 'Se procesează...' : 'Trimite Link'}
                 </Text>
               </TouchableOpacity>
 
@@ -173,4 +173,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterFormScreen; 
+export default ForgotPasswordScreen; 

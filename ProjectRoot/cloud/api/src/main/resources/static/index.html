@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alarm Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        .alarm-card {
+            margin-bottom: 15px;
+            border-left: 5px solid #dc3545;
+        }
+        .acknowledged {
+            border-left: 5px solid #198754;
+        }
+        #notifications {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="mb-4">Real-time Alarm Monitor</h1>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Live Alarms</h5>
+                        <div>
+                            <button id="connect" class="btn btn-primary">Connect</button>
+                            <button id="disconnect" class="btn btn-secondary" disabled>Disconnect</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="patientId" class="form-label">Patient ID:</label>
+                            <div class="input-group">
+                                <input type="number" id="patientId" class="form-control" value="1">
+                                <button id="subscribe" class="btn btn-info" disabled>Subscribe</button>
+                            </div>
+                            <small class="text-muted">Enter a patient ID to subscribe to their alarms</small>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                Notifications
+                            </div>
+                            <div class="card-body" id="notifications">
+                                <p class="text-center text-muted">No notifications yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var stompClient = null;
+        var patientSubscription = null;
+
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('subscribe').disabled = !connected;
+            
+            if (connected) {
+                document.getElementById('notifications').innerHTML = '<p class="text-center text-success">Connected to server</p>';
+            } else {
+                document.getElementById('notifications').innerHTML = '<p class="text-center text-muted">Disconnected</p>';
+            }
+        }
+
+        function connect() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                
+                // Subscribe to all alarms
+                stompClient.subscribe('/topic/alarms', function(alarmMessage) {
+                    showAlarm(JSON.parse(alarmMessage.body));
+                });
+            }, function(error) {
+                console.log('STOMP error: ' + error);
+                disconnect();
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            
+            if (patientSubscription !== null) {
+                patientSubscription.unsubscribe();
+                patientSubscription = null;
+            }
+            
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function subscribeToPatient() {
+            if (patientSubscription !== null) {
+                patientSubscription.unsubscribe();
+            }
+            
+            var patientId = document.getElementById('patientId').value;
+            
+            if (patientId) {
+                patientSubscription = stompClient.subscribe('/topic/patient/' + patientId + '/alarms', function(alarmMessage) {
+                    showAlarm(JSON.parse(alarmMessage.body), true);
+                });
+                
+                console.log('Subscribed to patient ' + patientId);
+                document.getElementById('notifications').innerHTML += 
+                    '<p class="text-center text-info">Subscribed to alarms for patient ' + patientId + '</p>';
+            }
+        }
+
+        function showAlarm(alarm, isPatientSpecific) {
+            var notificationArea = document.getElementById('notifications');
+            
+            // Remove "No notifications yet" message if it exists
+            if (notificationArea.innerHTML.includes('No notifications yet')) {
+                notificationArea.innerHTML = '';
+            }
+            
+            var timestamp = new Date(alarm.timestamp).toLocaleString();
+            var acknowledgedClass = alarm.acknowledged ? 'acknowledged' : '';
+            var acknowledgedBadge = alarm.acknowledged ? 
+                '<span class="badge bg-success">Acknowledged</span>' : 
+                '<span class="badge bg-danger">Active</span>';
+            
+            var patientBadge = isPatientSpecific ? 
+                '<span class="badge bg-primary ms-2">Patient ' + alarm.idPacient + '</span>' : '';
+            
+            var card = `
+                <div class="card alarm-card ${acknowledgedClass}" id="alarm-${alarm.id}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">${alarm.type} ${patientBadge}</h6>
+                        <div>
+                            ${acknowledgedBadge}
+                            <small class="text-muted ms-2">${timestamp}</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">${alarm.message}</p>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>Current Value:</strong> ${alarm.currentValue}
+                            </div>
+                            <div>
+                                <strong>Threshold Value:</strong> ${alarm.thresholdValue}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            notificationArea.innerHTML = card + notificationArea.innerHTML;
+        }
+
+        document.getElementById('connect').addEventListener('click', connect);
+        document.getElementById('disconnect').addEventListener('click', disconnect);
+        document.getElementById('subscribe').addEventListener('click', subscribeToPatient);
+    </script>
+</body>
+</html> 

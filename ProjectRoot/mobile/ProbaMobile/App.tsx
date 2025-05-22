@@ -7,12 +7,16 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import LoginFormScreen from './screens/LoginFormScreen';
 import RegisterFormScreen from './screens/RegisterFormScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import PatientDashboard from './screens/PatientDashboard';
 
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   LoginForm: undefined;
   RegisterForm: undefined;
+  ForgotPassword: undefined;
+  PatientDashboard: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,6 +34,22 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="LoginForm" component={LoginFormScreen} />
         <Stack.Screen name="RegisterForm" component={RegisterFormScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen 
+          name="PatientDashboard" 
+          component={PatientDashboard}
+          options={{
+            headerShown: true,
+            title: 'Dashboard Pacient',
+            headerStyle: {
+              backgroundColor: '#007AFF',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
