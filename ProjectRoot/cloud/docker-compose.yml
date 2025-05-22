@@ -10,15 +10,28 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=default
     depends_on:
-      - database
+      - mysql_db
+    networks:
+      - app-network
 
-  database:
+  mysql_db:
     image: mysql:8
     container_name: mysql_db
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydb
+      MYSQL_DATABASE: spital
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
