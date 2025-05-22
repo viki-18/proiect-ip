@@ -26,8 +26,8 @@ public class AuthService {
         Utilizator utilizator = utilizatorRepository.findByEmail(loginRequest.getEmail())
             .orElseThrow(() -> new RuntimeException("Utilizatorul nu a fost găsit"));
 
-        // Verifică parola ca text simplu
-        if (!loginRequest.getPassword().equals(utilizator.getParola())) {
+        // Verifică parola folosind password encoder
+        if (!passwordEncoder.matches(loginRequest.getPassword(), utilizator.getParola())) {
             throw new RuntimeException("Parolă incorectă");
         }
 
@@ -55,8 +55,20 @@ public class AuthService {
             throw new RuntimeException("Email-ul este deja înregistrat");
         }
 
-        // Aici poți adăuga logica pentru trimiterea email-ului către administrator
-        // și crearea contului temporar sau marcarea pentru aprobare
+        // Verifică dacă numărul de telefon există deja
+        if (utilizatorRepository.findByNrTelefon(registerRequest.getNrTelefon()) != null) {
+            throw new RuntimeException("Numărul de telefon este deja înregistrat");
+        }
+
+        // Creează utilizatorul nou
+        Utilizator utilizator = new Utilizator();
+        utilizator.setEmail(registerRequest.getEmail());
+        utilizator.setParola(passwordEncoder.encode(registerRequest.getPassword()));
+        utilizator.setNrTelefon(registerRequest.getNrTelefon());
+        utilizator.setTipUtilizator(registerRequest.getTipUtilizator());
+
+        // Salvează utilizatorul
+        utilizatorRepository.save(utilizator);
     }
 
     public void forgotPassword(String email) {
