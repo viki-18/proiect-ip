@@ -1,5 +1,7 @@
 package com.yourorg.api.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import com.yourorg.api.security.JwtTokenProvider;
 @Service
 public class AuthService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
     @Autowired
     private UtilizatorRepository utilizatorRepository;
 
@@ -23,21 +27,27 @@ public class AuthService {
     private JwtTokenProvider jwtTokenProvider;
 
     public AuthResponse login(LoginRequest loginRequest) {
+        logger.info("Attempting login for user: {}", loginRequest.getEmail());
+        
         Utilizator utilizator = utilizatorRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(() -> new RuntimeException("Utilizatorul nu a fost găsit"));
+            .orElseThrow(() -> {
+                logger.error("User not found: {}", loginRequest.getEmail());
+                return new RuntimeException("Utilizatorul nu a fost găsit");
+            });
 
-        // Verifică parola folosind password encoder
         if (!passwordEncoder.matches(loginRequest.getPassword(), utilizator.getParola())) {
+            logger.error("Invalid password for user: {}", loginRequest.getEmail());
             throw new RuntimeException("Parolă incorectă");
         }
 
-        // Permite doar pentru pacient sau ingrijitor
         String tip = utilizator.getTipUtilizator();
-        if (!("P".equals(tip) || "I".equals(tip))) {
+        if (!("P".equals(tip) || "I".equals(tip) || "M".equals(tip)|| "A".equals(tip)|| "S".equals(tip))) {
+            logger.error("Invalid user type for login: {}", tip);
             throw new RuntimeException("Doar pacienții și îngrijitorii pot folosi aplicația mobilă");
         }
 
         String token = jwtTokenProvider.generateToken(utilizator);
+        logger.info("Successfully generated token for user: {}", loginRequest.getEmail());
 
         return AuthResponse.builder()
             .token(token)
