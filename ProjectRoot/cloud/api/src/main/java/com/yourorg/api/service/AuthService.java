@@ -35,13 +35,16 @@ public class AuthService {
                 return new RuntimeException("Utilizatorul nu a fost găsit");
             });
 
+        logger.info("Found user: {}, stored password: {}", loginRequest.getEmail(), utilizator.getParola());
+        logger.info("Attempting to match password: {}", loginRequest.getPassword());
+
         if (!passwordEncoder.matches(loginRequest.getPassword(), utilizator.getParola())) {
             logger.error("Invalid password for user: {}", loginRequest.getEmail());
             throw new RuntimeException("Parolă incorectă");
         }
 
         String tip = utilizator.getTipUtilizator();
-        if (!("P".equals(tip) || "I".equals(tip) || "M".equals(tip)|| "A".equals(tip)|| "S".equals(tip))) {
+        if (!("P".equals(tip) || "I".equals(tip) || "M".equals(tip) || "A".equals(tip) || "S".equals(tip))) {
             logger.error("Invalid user type for login: {}", tip);
             throw new RuntimeException("Doar pacienții și îngrijitorii pot folosi aplicația mobilă");
         }
@@ -49,14 +52,13 @@ public class AuthService {
         String token = jwtTokenProvider.generateToken(utilizator);
         logger.info("Successfully generated token for user: {}", loginRequest.getEmail());
 
-        return AuthResponse.builder()
-            .token(token)
-            .user(AuthResponse.UserDto.builder()
-                .id(utilizator.getId().longValue())
-                .email(utilizator.getEmail())
-                .role(utilizator.getTipUtilizator())
-                .build())
-            .build();
+        AuthResponse.UserDto userDto = new AuthResponse.UserDto(
+            utilizator.getId().longValue(),
+            utilizator.getEmail(),
+            utilizator.getTipUtilizator()
+        );
+
+        return new AuthResponse(token, userDto);
     }
 
     public void register(RegisterRequest registerRequest) {

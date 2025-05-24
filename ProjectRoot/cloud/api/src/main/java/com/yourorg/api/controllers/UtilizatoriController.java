@@ -6,6 +6,7 @@ import com.yourorg.api.model.Utilizator;
 import com.yourorg.api.service.UtilizatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/utilizatori")
@@ -13,6 +14,9 @@ public class UtilizatoriController {
 
     @Autowired
     private UtilizatorService service;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<Utilizator> getAllUtilizatori() {
@@ -34,7 +38,9 @@ public class UtilizatoriController {
             utilizator.setEmail((String) payload.get("email"));
             utilizator.setNrTelefon((String) payload.get("nrTelefon"));
             utilizator.setTipUtilizator((String) payload.get("tipUtilizator"));
-            utilizator.setParola((String) payload.get("parola"));
+            // Hash parola înainte de a o salva
+            String rawPassword = (String) payload.get("parola");
+            utilizator.setParola(passwordEncoder.encode(rawPassword));
             utilizator.setNume((String) payload.get("nume"));
             utilizator.setPrenume((String) payload.get("prenume"));
             if (payload.get("varsta") != null) {
