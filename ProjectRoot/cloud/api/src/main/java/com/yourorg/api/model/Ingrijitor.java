@@ -1,37 +1,21 @@
 package com.yourorg.api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Ingrijitori", schema = "mydb")
+@Table(name = "Ingrijitori")
 public class Ingrijitor {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ingrijitor")
     private Integer idIngrijitor;
-    
+
     @Column(name = "id", nullable = false)
     private Integer utilizatorId;
-    
+
     @OneToOne
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     private Utilizator utilizator;
-
-    public Ingrijitor() {
-    }
-
-    public Ingrijitor(Integer idIngrijitor, Integer utilizatorId) {
-        this.idIngrijitor = idIngrijitor;
-        this.utilizatorId = utilizatorId;
-    }
 
     public Integer getIdIngrijitor() {
         return idIngrijitor;
@@ -55,5 +39,25 @@ public class Ingrijitor {
 
     public void setUtilizator(Utilizator utilizator) {
         this.utilizator = utilizator;
+    }
+
+    public String getNume() {
+        return utilizator != null ? utilizator.getNume() : null;
+    }
+
+    public String getPrenume() {
+        return utilizator != null ? utilizator.getPrenume() : null;
+    }
+
+    public Integer getVarsta() {
+        return utilizator != null ? utilizator.getVarsta() : null;
+    }
+
+    public String getGen() {
+        return utilizator != null ? utilizator.getGen() : null;
+    }
+
+    public String getSpecializare() {
+        return utilizator != null ? utilizator.getSpecializare() : null;
     }
 }

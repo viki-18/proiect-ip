@@ -51,7 +51,7 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             logger.error("Error generating JWT token: {}", e.getMessage());
             throw new RuntimeException("Error generating JWT token", e);
-        }
+    }
     }
 
     public boolean validateToken(String token) {

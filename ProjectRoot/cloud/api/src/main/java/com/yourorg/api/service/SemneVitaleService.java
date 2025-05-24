@@ -6,6 +6,7 @@ import com.yourorg.api.dto.AlarmaThresholdDTO;
 import com.yourorg.api.dto.SemneVitaleValuesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +30,7 @@ public class SemneVitaleService {
         return repository.findFirstByIdPacientOrderByDataInregistrareDesc(idPacient);
     }
 
+    @Transactional
     public SemneVitale createSemneVitale(Integer idPacient, SemneVitaleValuesDTO valuesDTO) {
         SemneVitale semneVitale = new SemneVitale();
         semneVitale.setIdPacient(idPacient);
@@ -75,6 +77,7 @@ public class SemneVitaleService {
         return repository.save(semneVitale);
     }
 
+    @Transactional
     public SemneVitale updateAlarmaThresholds(Integer idPacient, AlarmaThresholdDTO alarmaDTO) {
         // Get the latest record for the patient
         Optional<SemneVitale> latestRecordOpt = getLatestSemneVitale(idPacient);

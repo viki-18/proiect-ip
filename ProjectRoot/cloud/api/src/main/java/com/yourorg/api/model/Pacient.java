@@ -27,9 +27,7 @@ public class Pacient {
     private Utilizator utilizator;
     
     private String localitate;
-    
     private String strada;
-    
     private String nr;
     
     @Column(nullable = false, length = 13)
@@ -68,6 +66,11 @@ public class Pacient {
     private String pathRapoarte;
 
     public Pacient() {
+    }
+
+    public Pacient(Integer idPacient, Integer utilizatorId) {
+        this.idPacient = idPacient;
+        this.utilizatorId = utilizatorId;
     }
 
     public Integer getIdPacient() {

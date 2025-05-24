@@ -26,6 +26,21 @@ public class Utilizator {
     
     @Column(nullable = false, length = 30)
     private String parola;
+
+    @Column(length = 50)
+    private String nume;
+
+    @Column(length = 50)
+    private String prenume;
+
+    @Column
+    private Integer varsta;
+
+    @Column(length = 1)
+    private String gen;
+
+    @Column(length = 100)
+    private String specializare;
     
     public Utilizator() {
     }
@@ -76,5 +91,45 @@ public class Utilizator {
 
     public void setParola(String parola) {
         this.parola = parola;
+    }
+
+    public String getNume() {
+        return nume;
+    }
+
+    public void setNume(String nume) {
+        this.nume = nume;
+    }
+
+    public String getPrenume() {
+        return prenume;
+    }
+
+    public void setPrenume(String prenume) {
+        this.prenume = prenume;
+    }
+
+    public Integer getVarsta() {
+        return varsta;
+    }
+
+    public void setVarsta(Integer varsta) {
+        this.varsta = varsta;
+    }
+
+    public String getGen() {
+        return gen;
+    }
+
+    public void setGen(String gen) {
+        this.gen = gen;
+    }
+
+    public String getSpecializare() {
+        return specializare;
+    }
+
+    public void setSpecializare(String specializare) {
+        this.specializare = specializare;
     }
 } 
