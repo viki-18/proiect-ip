@@ -17,8 +17,10 @@ public class SemneVitaleController {
     private SemneVitaleService service;
 
     @GetMapping("/pacient/{idPacient}")
-    public List<SemneVitale> getSemneVitaleByPacient(@PathVariable Integer idPacient) {
-        return service.getAllSemneVitaleByPacient(idPacient);
+    public ResponseEntity<SemneVitale> getSemneVitaleByPacient(@PathVariable Integer idPacient) {
+        Optional<SemneVitale> latestRecord = service.getLatestSemneVitale(idPacient);
+        return latestRecord.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/pacient/{idPacient}/latest")
@@ -28,49 +30,33 @@ public class SemneVitaleController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/pacient/{idPacient}")
-    public SemneVitale addSemneVitale(
+    /**
+     * Add new vital signs for a patient
+     */
+    @PostMapping("/pacient/{idPacient}/values")
+    public ResponseEntity<SemneVitale> addSemneVitale(
             @PathVariable Integer idPacient,
             @RequestBody SemneVitaleValuesDTO valuesDTO) {
-        return service.createSemneVitale(idPacient, valuesDTO);
+        try {
+            SemneVitale newRecord = service.createSemneVitale(idPacient, valuesDTO);
+            return ResponseEntity.ok(newRecord);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
-     * Update the alarm thresholds for a patient
-     * @param idPacient the patient ID
-     * @param alarmaDTO the new alarm threshold values
-     * @return the updated semne vitale record
+     * Update alarm thresholds for a patient
      */
-    @PutMapping("/pacient/{idPacient}/alarme")
-    public SemneVitale updateAlarmaThresholds(
+    @PostMapping("/pacient/{idPacient}/alarme")
+    public ResponseEntity<SemneVitale> updateAlarmaThresholds(
             @PathVariable Integer idPacient,
             @RequestBody AlarmaThresholdDTO alarmaDTO) {
-        return service.updateAlarmaThresholds(idPacient, alarmaDTO);
-    }
-    
-    /**
-     * Create a new vital signs record with values and optional alarm thresholds
-     * @param idPacient the patient ID
-     * @param valuesDTO the vital signs values
-     * @param updateAlarme whether to update alarm thresholds as well
-     * @param alarmaDTO the alarm threshold values (optional)
-     * @return the created semne vitale record
-     */
-    @PostMapping("/pacient/{idPacient}/complete")
-    public SemneVitale addCompleteRecord(
-            @PathVariable Integer idPacient,
-            @RequestBody SemneVitaleValuesDTO valuesDTO,
-            @RequestParam(required = false, defaultValue = "false") boolean updateAlarme,
-            @RequestParam(required = false) AlarmaThresholdDTO alarmaDTO) {
-        
-        // First create the record with the vital signs values
-        SemneVitale newRecord = service.createSemneVitale(idPacient, valuesDTO);
-        
-        // If requested, also update alarm thresholds
-        if (updateAlarme && alarmaDTO != null) {
-            newRecord = service.updateAlarmaThresholds(idPacient, alarmaDTO);
+        try {
+            SemneVitale updated = service.updateAlarmaThresholds(idPacient, alarmaDTO);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
-        
-        return newRecord;
     }
 }

@@ -1,17 +1,17 @@
 -- Insert test data into Utilizatori
 INSERT INTO Utilizatori (id, email, nr_telefon, Tip_utilizator, parola) VALUES 
-(1, 'admin@spital.ro', '0712345678', 'A', '$2a$10$GiAcsRlrQVZCtykYS7LhCupybofTIIwl12H8K7TWU39hw8w7yY00O'),
-(2, 'medic1@spital.ro', '0723456789', 'M', '$2a$10$1VqTUMCClzJw4kJErF/W3ODIL9ZNeU9VaeewTb58WcfSipwzlNSfq'),
-(3, 'medic2@spital.ro', '0734567890', 'M', '$2a$10$H.fkelJYMQyKCG99fmjor.af24JTkZEpSVmVhnxui6oJdstxAcv1e'),
-(4, 'ingrijitor1@spital.ro', '0745678901', 'I', '$2a$10$0gAi/Ib4Q5Ptmtxhbx6YKuv0bUXOS9/RxN6lOjaauP/axz2H0jH7i'),
-(5, 'ingrijitor2@spital.ro', '0756789012', 'I', '$2a$10$9/PlML.sWXuWNhZawkIHreQ/TpinjEMC2sTYgVLAvuwuIiBCW2RuG'),
-(6, 'supraveghetor1@spital.ro', '0767890123', 'S', '$2a$10$Ugvn9BNHEdHEgK91/UY.8OjjjBLuB7lQTv3BW/YMJSMvr0xv..5rK'),
-(7, 'supraveghetor2@spital.ro', '0778901234', 'S', '$2a$10$gZRnzlSmKrKkLe94xVNAge6M/.90mKUPe2JAdoa6vAQOe6eozBxYG'),
-(8, 'pacient1@email.com', '0789012345', 'P', '$2a$10$8Izx79bIb2S8aOE51p90neDPWF1BfDOTmXbQJrkUMPSeMJJNDUqBi'),
-(9, 'pacient2@email.com', '0790123456', 'P', '$2a$10$vFka65i8XEfhg10q72zOLuIdSrjyyGQgrl/uRS3sXwlYKaNHC7YJ2'),
-(10, 'pacient3@email.com', '0701234567', 'P', '$2a$10$CGpPeCcL2lt/aUjun89aqeE.u7hERfQXwbn15S.k7yjYtvVpMjSqm'),
-(11, 'pacient4@email.com', '0712345670', 'P', '$2a$10$FZSYb8e45xygOmeMdGFTRun.3LX1RpX3qFEdV3HNZctu8GUfQjTDe'),
-(12, 'pacient5@email.com', '0723456780', 'P', '$2a$10$cSVh/i90lKHeUfHBj5rSXuXX9aaxM1yHDQlONdRtYRbcyEk78ezXG');
+(1, 'admin@spital.ro', '0712345678', 'A', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(2, 'medic1@spital.ro', '0723456789', 'M', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(3, 'medic2@spital.ro', '0734567890', 'M', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(4, 'ingrijitor1@spital.ro', '0745678901', 'I', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(5, 'ingrijitor2@spital.ro', '0756789012', 'I', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(6, 'supraveghetor1@spital.ro', '0767890123', 'S', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(7, 'supraveghetor2@spital.ro', '0778901234', 'S', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(8, 'pacient1@email.com', '0789012345', 'P', '$2a$10$7EqJtq98hPqEX7fNZaFWoO5rG1b6b6h1g6Z5j6YyF2F2F2F2F2F2F'),
+(9, 'pacient2@email.com', '0790123456', 'P', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(10, 'pacient3@email.com', '0701234567', 'P', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(11, 'pacient4@email.com', '0712345670', 'P', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW'),
+(12, 'pacient5@email.com', '0723456780', 'P', '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW');
 
 -- Insert test data into Administratori
 INSERT INTO Administratori (id) VALUES (1);

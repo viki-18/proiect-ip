@@ -21,10 +21,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors().and()
-            .csrf().disable()  // For API endpoints. In production, consider enabling CSRF protection
+            .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/**").permitAll()  // For development. In production, restrict access as needed
-                .anyRequest().authenticated()
+                .requestMatchers("/**").permitAll()  // Temporarily allow all requests for testing
             );
         
         // Configure channel security if needed (redirects HTTP to HTTPS)
@@ -37,10 +36,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));  // In production, restrict to specific origins
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("*"));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -16,28 +16,96 @@ public class PacientiController {
     private PacientService service;
 
     @GetMapping
-    public List<Pacient> getAllPacienti() {
-        return service.getAllPacienti();
+    public List<Map<String, Object>> getAllPacienti() {
+        List<Pacient> pacienti = service.getAllPacienti();
+        List<Map<String, Object>> response = new ArrayList<>();
+        
+        for (Pacient pacient : pacienti) {
+            Map<String, Object> pacientInfo = new HashMap<>();
+            pacientInfo.put("id", pacient.getIdPacient());
+            pacientInfo.put("utilizatorId", pacient.getUtilizatorId());
+            pacientInfo.put("localitate", pacient.getLocalitate());
+            pacientInfo.put("strada", pacient.getStrada());
+            pacientInfo.put("nr", pacient.getNr());
+            pacientInfo.put("CNP", pacient.getCNP());
+            pacientInfo.put("profesie", pacient.getProfesie());
+            pacientInfo.put("idMedic", pacient.getIdMedic());
+            pacientInfo.put("recomandariDeLaMedic", pacient.getRecomandariDeLaMedic());
+            pacientInfo.put("idSupraveghetor", pacient.getIdSupraveghetor());
+            pacientInfo.put("idIngrijitor", pacient.getIdIngrijitor());
+            pacientInfo.put("idSmartphone", pacient.getIdSmartphone());
+            pacientInfo.put("pathRapoarte", pacient.getPathRapoarte());
+            response.add(pacientInfo);
+        }
+        
+        return response;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pacient> getPacientById(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> getPacientById(@PathVariable Integer id) {
         Optional<Pacient> pacient = service.getPacientById(id);
-        return pacient.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (pacient.isPresent()) {
+            Pacient p = pacient.get();
+            Map<String, Object> pacientInfo = new HashMap<>();
+            pacientInfo.put("id", p.getIdPacient());
+            pacientInfo.put("utilizatorId", p.getUtilizatorId());
+            pacientInfo.put("localitate", p.getLocalitate());
+            pacientInfo.put("strada", p.getStrada());
+            pacientInfo.put("nr", p.getNr());
+            pacientInfo.put("CNP", p.getCNP());
+            pacientInfo.put("profesie", p.getProfesie());
+            pacientInfo.put("idMedic", p.getIdMedic());
+            pacientInfo.put("recomandariDeLaMedic", p.getRecomandariDeLaMedic());
+            pacientInfo.put("idSupraveghetor", p.getIdSupraveghetor());
+            pacientInfo.put("idIngrijitor", p.getIdIngrijitor());
+            pacientInfo.put("idSmartphone", p.getIdSmartphone());
+            pacientInfo.put("pathRapoarte", p.getPathRapoarte());
+            return ResponseEntity.ok(pacientInfo);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public Pacient createPacient(@RequestBody Pacient pacient) {
-        return service.createPacient(pacient);
+    public ResponseEntity<Map<String, Object>> createPacient(@RequestBody Pacient pacient) {
+        Pacient created = service.createPacient(pacient);
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", created.getIdPacient());
+        response.put("utilizatorId", created.getUtilizatorId());
+        response.put("localitate", created.getLocalitate());
+        response.put("strada", created.getStrada());
+        response.put("nr", created.getNr());
+        response.put("CNP", created.getCNP());
+        response.put("profesie", created.getProfesie());
+        response.put("idMedic", created.getIdMedic());
+        response.put("recomandariDeLaMedic", created.getRecomandariDeLaMedic());
+        response.put("idSupraveghetor", created.getIdSupraveghetor());
+        response.put("idIngrijitor", created.getIdIngrijitor());
+        response.put("idSmartphone", created.getIdSmartphone());
+        response.put("pathRapoarte", created.getPathRapoarte());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pacient> updatePacient(@PathVariable Integer id, @RequestBody Pacient pacient) {
+    public ResponseEntity<Map<String, Object>> updatePacient(@PathVariable Integer id, @RequestBody Pacient pacient) {
         if (!service.getPacientById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(service.updatePacient(id, pacient));
+        Pacient updated = service.updatePacient(id, pacient);
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", updated.getIdPacient());
+        response.put("utilizatorId", updated.getUtilizatorId());
+        response.put("localitate", updated.getLocalitate());
+        response.put("strada", updated.getStrada());
+        response.put("nr", updated.getNr());
+        response.put("CNP", updated.getCNP());
+        response.put("profesie", updated.getProfesie());
+        response.put("idMedic", updated.getIdMedic());
+        response.put("recomandariDeLaMedic", updated.getRecomandariDeLaMedic());
+        response.put("idSupraveghetor", updated.getIdSupraveghetor());
+        response.put("idIngrijitor", updated.getIdIngrijitor());
+        response.put("idSmartphone", updated.getIdSmartphone());
+        response.put("pathRapoarte", updated.getPathRapoarte());
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
