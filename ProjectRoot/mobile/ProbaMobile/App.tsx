@@ -9,6 +9,7 @@ import LoginFormScreen from './screens/LoginFormScreen';
 import RegisterFormScreen from './screens/RegisterFormScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import PatientDashboard from './screens/PatientDashboard';
+import CaregiverDashboard from './screens/CaregiverDashboard';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -16,7 +17,8 @@ export type RootStackParamList = {
   LoginForm: undefined;
   RegisterForm: undefined;
   ForgotPassword: undefined;
-  PatientDashboard: undefined;
+  PatientDashboard: { userId: number };
+  CaregiverDashboard: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -41,6 +43,21 @@ const App = () => {
           options={{
             headerShown: true,
             title: 'Dashboard Pacient',
+            headerStyle: {
+              backgroundColor: '#007AFF',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen 
+          name="CaregiverDashboard" 
+          component={CaregiverDashboard}
+          options={{
+            headerShown: true,
+            title: 'Dashboard Ingrijitor',
             headerStyle: {
               backgroundColor: '#007AFF',
             },

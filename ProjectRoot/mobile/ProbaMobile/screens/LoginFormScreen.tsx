@@ -10,7 +10,7 @@ type RootStackParamList = {
   Login: undefined;
   ForgotPassword: undefined;
   Dashboard: undefined;
-  PatientDashboard: undefined;
+  PatientDashboard: { userId: number };
   CaregiverDashboard: undefined;
 };
 
@@ -34,29 +34,30 @@ const LoginFormScreen: React.FC = () => {
     try {
       setIsLoading(true);
       
-      // Simulăm un login reușit pentru un email valid
-      if (values.email === 'patient@example.com') {
-        // Navigăm direct la dashboard-ul pacientului
-        navigation.navigate('PatientDashboard');
-        return;
-      } else if (values.email === 'caregiver@example.com') {
-        // Navigăm direct la dashboard-ul îngrijitorului
-        navigation.navigate('CaregiverDashboard');
-        return;
-      }
-
-      // Dacă email-ul nu este unul dintre cele valide, încercăm login-ul normal
-      const response = await authService.login(values);
+      // Use patient id 1
+      navigation.navigate('PatientDashboard', { userId: 1 });
       
-      // Salvare token în storage (vom implementa mai târziu)
-      // await AsyncStorage.setItem('token', response.token);
-      
-      Alert.alert('Succes', 'Autentificare reușită!');
-      navigation.navigate('Dashboard');
     } catch (error: any) {
+      console.error('Login error in screen:', error);
+      let errorMessage = 'An error occurred during authentication';
+      
+      if (error.response) {
+        errorMessage = `Server Error: ${error.response.status}\n${JSON.stringify(error.response.data, null, 2)}`;
+      } else if (error.request) {
+        errorMessage = 'Could not connect to server. Please check your internet connection.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       Alert.alert(
-        'Eroare',
-        error.message || 'A apărut o eroare la autentificare'
+        'Error',
+        errorMessage,
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK Pressed')
+          }
+        ]
       );
     } finally {
       setIsLoading(false);
@@ -65,7 +66,8 @@ const LoginFormScreen: React.FC = () => {
 
   const handleSkipAuth = (role: 'patient' | 'caregiver') => {
     if (role === 'patient') {
-      navigation.navigate('PatientDashboard');
+      // For testing, use a known patient's userId
+      navigation.navigate('PatientDashboard', { userId: 1 }); // Using patient ID 1
     } else {
       navigation.navigate('CaregiverDashboard');
     }
