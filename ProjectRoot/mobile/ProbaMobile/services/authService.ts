@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.1.8:8080'; // Updated with your laptop's IP
+const BASE_URL = 'http://192.168.185.237:8080'; // Updated with your laptop's IP
 
 export interface LoginCredentials {
   email: string;

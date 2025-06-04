@@ -1,30 +1,30 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.1.8:8080';
+const BASE_URL = 'http://192.168.185.237:8080';
 
 export interface VitalSigns {
-  heartRate: {
+  ritmCardiac: {
     data: number[];
     labels: string[];
   };
-  bloodPressure: {
-    systolic: number[];
-    diastolic: number[];
+  tensiuneArteriala: {
+    sistolica: number[];
+    diastolica: number[];
     labels: string[];
   };
-  bloodSugar: {
+  glicemie: {
     data: number[];
     labels: string[];
   };
-  temperature: {
+  temperaturaCorporala: {
     data: number[];
     labels: string[];
   };
-  weight: {
+  greutate: {
     data: number[];
     labels: string[];
   };
-  ambientTemperature: {
+  temperaturaAmbientala: {
     data: number[];
     labels: string[];
   };
@@ -33,31 +33,31 @@ export interface VitalSigns {
 export interface PatientData {
   id: number;
   personalInfo: {
-    name: string;
+    nume: string;
     email: string;
-    age: number;
-    gender: string;
-    bloodType: string;
-    allergies: string[];
-    chronicConditions: string[];
-    emergencyContact: {
-      name: string;
-      relationship: string;
-      phone: string;
+    varsta: number;
+    gen: string;
+    grupaSanguina: string;
+    alergii: string[];
+    conditiiCronice: string[];
+    contactUrgent: {
+      nume: string;
+      relatie: string;
+      telefon: string;
     };
   };
-  vitalSigns: VitalSigns;
-  medicalRecommendations: Array<{
+  semneVitale: VitalSigns;
+  recomandariMedicale: Array<{
     id: number;
-    date: string;
-    doctor: string;
-    recommendation: string;
+    data: string;
+    medic: string;
+    recomandare: string;
   }>;
-  alerts: Array<{
+  alerte: Array<{
     id: number;
-    type: string;
-    message: string;
-    date: string;
+    tip: string;
+    mesaj: string;
+    data: string;
   }>;
 }
 
@@ -228,53 +228,53 @@ const patientService = {
       const patientData: PatientData = {
         id: patient.id,
         personalInfo: {
-          name: `${user.nume} ${user.prenume}`,
-          email: user.email,
-          age: user.varsta || 0,
-          gender: user.gen || "N/A",
-          bloodType: "N/A", // Blood type not available in the response
-          allergies: [],
-          chronicConditions: [],
-          emergencyContact: {
-            name: "N/A",
-            relationship: "N/A",
-            phone: "N/A"
+          nume: `${user.nume || ''} ${user.prenume || ''}`.trim() || 'N/A',
+          email: user.email || 'N/A',
+          varsta: user.varsta || 0,
+          gen: user.gen || "N/A",
+          grupaSanguina: "N/A", // Blood type not available in the response
+          alergii: [],
+          conditiiCronice: [],
+          contactUrgent: {
+            nume: "N/A",
+            relatie: "N/A",
+            telefon: "N/A"
           }
         },
-        vitalSigns: {
-          heartRate: {
+        semneVitale: {
+          ritmCardiac: {
             data: [],
             labels: []
           },
-          bloodPressure: {
-            systolic: [],
-            diastolic: [],
+          tensiuneArteriala: {
+            sistolica: [],
+            diastolica: [],
             labels: []
           },
-          bloodSugar: {
+          glicemie: {
             data: [],
             labels: []
           },
-          temperature: {
+          temperaturaCorporala: {
             data: [],
             labels: []
           },
-          weight: {
+          greutate: {
             data: [],
             labels: []
           },
-          ambientTemperature: {
+          temperaturaAmbientala: {
             data: [],
             labels: []
           }
         },
-        medicalRecommendations: patient.recomandariDeLaMedic ? [{
+        recomandariMedicale: patient.recomandariDeLaMedic ? [{
           id: 1,
-          date: new Date().toISOString(),
-          doctor: "Medic",
-          recommendation: patient.recomandariDeLaMedic
+          data: new Date().toISOString(),
+          medic: "Medic",
+          recomandare: patient.recomandariDeLaMedic
         }] : [],
-        alerts: []
+        alerte: []
       };
 
       // Get vital signs for patient ID 1
@@ -292,97 +292,165 @@ const patientService = {
           const timestamp = new Date(vitalSigns.dataInregistrare).toLocaleTimeString();
           
           // Update vital signs with the new data
-          patientData.vitalSigns = {
-            heartRate: {
-              data: vitalSigns.puls !== null ? [vitalSigns.puls] : [],
-              labels: vitalSigns.puls !== null ? [timestamp] : []
+          patientData.semneVitale = {
+            ritmCardiac: {
+              data: vitalSigns.puls !== null && vitalSigns.puls !== 0 ? [vitalSigns.puls] : [],
+              labels: vitalSigns.puls !== null && vitalSigns.puls !== 0 ? [timestamp] : []
             },
-            bloodPressure: {
-              systolic: vitalSigns.tensiuneArteriala !== null ? [vitalSigns.tensiuneArteriala] : [],
-              diastolic: vitalSigns.tensiuneArteriala !== null ? [vitalSigns.tensiuneArteriala - 40] : [], // Approximate diastolic
-              labels: vitalSigns.tensiuneArteriala !== null ? [timestamp] : []
+            tensiuneArteriala: {
+              sistolica: vitalSigns.tensiuneArteriala !== null && vitalSigns.tensiuneArteriala !== 0 ? [vitalSigns.tensiuneArteriala] : [],
+              diastolica: vitalSigns.tensiuneArteriala !== null && vitalSigns.tensiuneArteriala !== 0 ? [vitalSigns.tensiuneArteriala - 40] : [], // Approximate diastolic
+              labels: vitalSigns.tensiuneArteriala !== null && vitalSigns.tensiuneArteriala !== 0 ? [timestamp] : []
             },
-            bloodSugar: {
-              data: vitalSigns.glicemie !== null ? [vitalSigns.glicemie] : [],
-              labels: vitalSigns.glicemie !== null ? [timestamp] : []
+            glicemie: {
+              data: vitalSigns.glicemie !== null && vitalSigns.glicemie !== 0 ? [vitalSigns.glicemie] : [],
+              labels: vitalSigns.glicemie !== null && vitalSigns.glicemie !== 0 ? [timestamp] : []
             },
-            temperature: {
-              data: vitalSigns.temperaturaCorporala !== null ? [vitalSigns.temperaturaCorporala] : [],
-              labels: vitalSigns.temperaturaCorporala !== null ? [timestamp] : []
+            temperaturaCorporala: {
+              data: vitalSigns.temperaturaCorporala !== null && vitalSigns.temperaturaCorporala !== 0 ? [vitalSigns.temperaturaCorporala] : [],
+              labels: vitalSigns.temperaturaCorporala !== null && vitalSigns.temperaturaCorporala !== 0 ? [timestamp] : []
             },
-            weight: {
-              data: vitalSigns.greutate !== null ? [vitalSigns.greutate] : [],
-              labels: vitalSigns.greutate !== null ? [timestamp] : []
+            greutate: {
+              data: vitalSigns.greutate !== null && vitalSigns.greutate !== 0 ? [vitalSigns.greutate] : [],
+              labels: vitalSigns.greutate !== null && vitalSigns.greutate !== 0 ? [timestamp] : []
             },
-            ambientTemperature: {
-              data: vitalSigns.temperaturaAmbientala !== null ? [vitalSigns.temperaturaAmbientala] : [],
-              labels: vitalSigns.temperaturaAmbientala !== null ? [timestamp] : []
+            temperaturaAmbientala: {
+              data: vitalSigns.temperaturaAmbientala !== null && vitalSigns.temperaturaAmbientala !== 0 ? [vitalSigns.temperaturaAmbientala] : [],
+              labels: vitalSigns.temperaturaAmbientala !== null && vitalSigns.temperaturaAmbientala !== 0 ? [timestamp] : []
             }
           };
 
           // Add alerts for values outside normal ranges
           const alerts: Array<{
             id: number;
-            type: string;
-            message: string;
-            date: string;
+            tip: string;
+            mesaj: string;
+            data: string;
           }> = [];
           
-          if (vitalSigns.puls !== null && vitalSigns.puls > vitalSigns.valAlarmaPuls) {
-            alerts.push({
-              id: 1,
-              type: 'warning',
-              message: `High heart rate: ${vitalSigns.puls} bpm (max: ${vitalSigns.valAlarmaPuls})`,
-              date: vitalSigns.dataInregistrare
-            });
+          // Heart rate alerts
+          if (vitalSigns.puls !== null && vitalSigns.puls !== 0) {
+            if (vitalSigns.puls > vitalSigns.valAlarmaPuls) {
+              alerts.push({
+                id: 1,
+                tip: 'warning',
+                mesaj: `Ritmul cardiac ridicat: ${vitalSigns.puls} bpm (max: ${vitalSigns.valAlarmaPuls})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
+            // Check for low heart rate (below 80)
+            if (vitalSigns.puls < 80) {
+              alerts.push({
+                id: 7,
+                tip: 'warning',
+                mesaj: `Ritmul cardiac scăzut: ${vitalSigns.puls} bpm (min: 80)`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
           }
           
-          if (vitalSigns.tensiuneArteriala !== null && vitalSigns.tensiuneArteriala > vitalSigns.valAlarmaTensiune) {
-            alerts.push({
-              id: 2,
-              type: 'warning',
-              message: `High blood pressure: ${vitalSigns.tensiuneArteriala} mmHg (max: ${vitalSigns.valAlarmaTensiune})`,
-              date: vitalSigns.dataInregistrare
-            });
+          // Blood pressure alerts
+          if (vitalSigns.tensiuneArteriala !== null && vitalSigns.tensiuneArteriala !== 0) {
+            if (vitalSigns.tensiuneArteriala > vitalSigns.valAlarmaTensiune) {
+              alerts.push({
+                id: 2,
+                tip: 'warning',
+                mesaj: `Tensiune arterială ridicată: ${vitalSigns.tensiuneArteriala} mmHg (max: ${vitalSigns.valAlarmaTensiune})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
+            if (vitalSigns.valAlarmaTensiuneMin !== null && vitalSigns.tensiuneArteriala < vitalSigns.valAlarmaTensiuneMin) {
+              alerts.push({
+                id: 8,
+                tip: 'warning',
+                mesaj: `Tensiune arterială scăzută: ${vitalSigns.tensiuneArteriala} mmHg (min: ${vitalSigns.valAlarmaTensiuneMin})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
           }
           
-          if (vitalSigns.temperaturaCorporala !== null && vitalSigns.temperaturaCorporala > vitalSigns.valAlarmaTemperatura) {
-            alerts.push({
-              id: 3,
-              type: 'warning',
-              message: `High body temperature: ${vitalSigns.temperaturaCorporala}°C (max: ${vitalSigns.valAlarmaTemperatura})`,
-              date: vitalSigns.dataInregistrare
-            });
+          // Body temperature alerts
+          if (vitalSigns.temperaturaCorporala !== null && vitalSigns.temperaturaCorporala !== 0) {
+            if (vitalSigns.temperaturaCorporala > vitalSigns.valAlarmaTemperatura) {
+              alerts.push({
+                id: 3,
+                tip: 'warning',
+                mesaj: `Temperatură corporală ridicată: ${vitalSigns.temperaturaCorporala}°C (max: ${vitalSigns.valAlarmaTemperatura})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
+            if (vitalSigns.valAlarmaTemperaturaMin !== null && vitalSigns.temperaturaCorporala < vitalSigns.valAlarmaTemperaturaMin) {
+              alerts.push({
+                id: 9,
+                tip: 'warning',
+                mesaj: `Temperatură corporală scăzută: ${vitalSigns.temperaturaCorporala}°C (min: ${vitalSigns.valAlarmaTemperaturaMin})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
           }
           
-          if (vitalSigns.glicemie !== null && vitalSigns.glicemie > vitalSigns.valAlarmaGlicemie) {
-            alerts.push({
-              id: 4,
-              type: 'warning',
-              message: `High blood sugar: ${vitalSigns.glicemie} mg/dL (max: ${vitalSigns.valAlarmaGlicemie})`,
-              date: vitalSigns.dataInregistrare
-            });
+          // Blood sugar alerts
+          if (vitalSigns.glicemie !== null && vitalSigns.glicemie !== 0) {
+            if (vitalSigns.glicemie > vitalSigns.valAlarmaGlicemie) {
+              alerts.push({
+                id: 4,
+                tip: 'warning',
+                mesaj: `Glicemie ridicată: ${vitalSigns.glicemie} mg/dL (max: ${vitalSigns.valAlarmaGlicemie})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
+            if (vitalSigns.valAlarmaGlicemieMin !== null && vitalSigns.glicemie < vitalSigns.valAlarmaGlicemieMin) {
+              alerts.push({
+                id: 10,
+                tip: 'warning',
+                mesaj: `Glicemie scăzută: ${vitalSigns.glicemie} mg/dL (min: ${vitalSigns.valAlarmaGlicemieMin})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
           }
           
-          if (vitalSigns.greutate !== null && vitalSigns.greutate > vitalSigns.valAlarmaGreutate) {
-            alerts.push({
-              id: 5,
-              type: 'warning',
-              message: `High weight: ${vitalSigns.greutate} kg (max: ${vitalSigns.valAlarmaGreutate})`,
-              date: vitalSigns.dataInregistrare
-            });
+          // Weight alerts
+          if (vitalSigns.greutate !== null && vitalSigns.greutate !== 0) {
+            if (vitalSigns.greutate > vitalSigns.valAlarmaGreutate) {
+              alerts.push({
+                id: 5,
+                tip: 'warning',
+                mesaj: `Greutate ridicată: ${vitalSigns.greutate} kg (max: ${vitalSigns.valAlarmaGreutate})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
+            if (vitalSigns.valAlarmaGreutateMin !== null && vitalSigns.greutate < vitalSigns.valAlarmaGreutateMin) {
+              alerts.push({
+                id: 11,
+                tip: 'warning',
+                mesaj: `Greutate scăzută: ${vitalSigns.greutate} kg (min: ${vitalSigns.valAlarmaGreutateMin})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
           }
           
-          if (vitalSigns.temperaturaAmbientala !== null && vitalSigns.temperaturaAmbientala > vitalSigns.valAlarmaTemperaturaAmb) {
-            alerts.push({
-              id: 6,
-              type: 'warning',
-              message: `High ambient temperature: ${vitalSigns.temperaturaAmbientala}°C (max: ${vitalSigns.valAlarmaTemperaturaAmb})`,
-              date: vitalSigns.dataInregistrare
-            });
+          // Ambient temperature alerts
+          if (vitalSigns.temperaturaAmbientala !== null && vitalSigns.temperaturaAmbientala !== 0) {
+            if (vitalSigns.temperaturaAmbientala > vitalSigns.valAlarmaTemperaturaAmb) {
+              alerts.push({
+                id: 6,
+                tip: 'warning',
+                mesaj: `Temperatură ambientală ridicată: ${vitalSigns.temperaturaAmbientala}°C (max: ${vitalSigns.valAlarmaTemperaturaAmb})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
+            if (vitalSigns.valAlarmaTemperaturaAmbMin !== null && vitalSigns.temperaturaAmbientala < vitalSigns.valAlarmaTemperaturaAmbMin) {
+              alerts.push({
+                id: 12,
+                tip: 'warning',
+                mesaj: `Temperatură ambientală scăzută: ${vitalSigns.temperaturaAmbientala}°C (min: ${vitalSigns.valAlarmaTemperaturaAmbMin})`,
+                data: vitalSigns.dataInregistrare
+              });
+            }
           }
           
-          patientData.alerts = alerts;
+          // Keep only the last 10 alerts
+          patientData.alerte = alerts.slice(-10);
         }
       } catch (vitalSignsError) {
         console.warn('Could not fetch vital signs:', vitalSignsError);

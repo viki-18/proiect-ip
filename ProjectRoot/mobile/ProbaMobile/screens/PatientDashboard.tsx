@@ -20,7 +20,7 @@ const PatientDashboard: React.FC = () => {
   const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
-    const fetchPatientData = async () => {
+    const fetchData = async () => {
       try {
         const userId = route.params.userId;
         console.log('Fetching patient data for user ID:', userId);
@@ -35,193 +35,115 @@ const PatientDashboard: React.FC = () => {
       }
     };
 
-    fetchPatientData();
+    fetchData();
 
     // Set up real-time updates
-    const updateInterval = setInterval(async () => {
+    const fetchVitalSigns = async () => {
       try {
-        const userId = route.params.userId;
-        const vitalSigns = await patientService.getVitalSignsUpdates(userId);
-        console.log('Received vital signs update:', vitalSigns);
-        
-        if (!vitalSigns) {
-          console.log('No vital signs data received');
-          return;
-        }
+        const vitalSigns = await patientService.getVitalSignsUpdates(1);
+        const timestamp = new Date(vitalSigns.dataInregistrare).toLocaleTimeString();
 
         setPatientData(prevData => {
           if (!prevData) return null;
 
           const newData = { ...prevData };
-          const timestamp = new Date(vitalSigns.dataInregistrare).toLocaleTimeString();
           
           // Update heart rate
-          if (vitalSigns.puls !== null) {
-            newData.vitalSigns.heartRate.data.push(vitalSigns.puls);
-            newData.vitalSigns.heartRate.labels.push(timestamp);
-            
-            // Check heart rate alerts
-            if (vitalSigns.puls > vitalSigns.valAlarmaPuls) {
-              newData.alerts.push({
-                id: Date.now(),
-                type: 'warning',
-                message: `High heart rate: ${vitalSigns.puls} bpm (max: ${vitalSigns.valAlarmaPuls})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
-            if (vitalSigns.valAlarmaPulsMin !== null && vitalSigns.puls < vitalSigns.valAlarmaPulsMin) {
-              newData.alerts.push({
-                id: Date.now() + 1,
-                type: 'warning',
-                message: `Low heart rate: ${vitalSigns.puls} bpm (min: ${vitalSigns.valAlarmaPulsMin})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
+          if (vitalSigns.puls !== null && vitalSigns.puls !== 0) {
+            newData.semneVitale.ritmCardiac.data.push(vitalSigns.puls);
+            newData.semneVitale.ritmCardiac.labels.push(timestamp);
           }
           
           // Update blood pressure
-          if (vitalSigns.tensiuneArteriala !== null) {
-            newData.vitalSigns.bloodPressure.systolic.push(vitalSigns.tensiuneArteriala);
-            newData.vitalSigns.bloodPressure.diastolic.push(vitalSigns.tensiuneArteriala - 40);
-            newData.vitalSigns.bloodPressure.labels.push(timestamp);
-            
-            // Check blood pressure alerts
-            if (vitalSigns.tensiuneArteriala > vitalSigns.valAlarmaTensiune) {
-              newData.alerts.push({
-                id: Date.now() + 2,
-                type: 'warning',
-                message: `High blood pressure: ${vitalSigns.tensiuneArteriala} mmHg (max: ${vitalSigns.valAlarmaTensiune})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
-            if (vitalSigns.valAlarmaTensiuneMin !== null && vitalSigns.tensiuneArteriala < vitalSigns.valAlarmaTensiuneMin) {
-              newData.alerts.push({
-                id: Date.now() + 3,
-                type: 'warning',
-                message: `Low blood pressure: ${vitalSigns.tensiuneArteriala} mmHg (min: ${vitalSigns.valAlarmaTensiuneMin})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
+          if (vitalSigns.tensiuneArteriala !== null && vitalSigns.tensiuneArteriala !== 0) {
+            newData.semneVitale.tensiuneArteriala.sistolica.push(vitalSigns.tensiuneArteriala);
+            newData.semneVitale.tensiuneArteriala.diastolica.push(vitalSigns.tensiuneArteriala - 40);
+            newData.semneVitale.tensiuneArteriala.labels.push(timestamp);
           }
           
           // Update blood sugar
-          if (vitalSigns.glicemie !== null) {
-            newData.vitalSigns.bloodSugar.data.push(vitalSigns.glicemie);
-            newData.vitalSigns.bloodSugar.labels.push(timestamp);
-            
-            // Check blood sugar alerts
-            if (vitalSigns.glicemie > vitalSigns.valAlarmaGlicemie) {
-              newData.alerts.push({
-                id: Date.now() + 4,
-                type: 'warning',
-                message: `High blood sugar: ${vitalSigns.glicemie} mg/dL (max: ${vitalSigns.valAlarmaGlicemie})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
-            if (vitalSigns.valAlarmaGlicemieMin !== null && vitalSigns.glicemie < vitalSigns.valAlarmaGlicemieMin) {
-              newData.alerts.push({
-                id: Date.now() + 5,
-                type: 'warning',
-                message: `Low blood sugar: ${vitalSigns.glicemie} mg/dL (min: ${vitalSigns.valAlarmaGlicemieMin})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
+          if (vitalSigns.glicemie !== null && vitalSigns.glicemie !== 0) {
+            newData.semneVitale.glicemie.data.push(vitalSigns.glicemie);
+            newData.semneVitale.glicemie.labels.push(timestamp);
           }
           
           // Update temperature
-          if (vitalSigns.temperaturaCorporala !== null) {
-            newData.vitalSigns.temperature.data.push(vitalSigns.temperaturaCorporala);
-            newData.vitalSigns.temperature.labels.push(timestamp);
-            
-            // Check body temperature alerts
-            if (vitalSigns.temperaturaCorporala > vitalSigns.valAlarmaTemperatura) {
-              newData.alerts.push({
-                id: Date.now() + 6,
-                type: 'warning',
-                message: `High body temperature: ${vitalSigns.temperaturaCorporala}°C (max: ${vitalSigns.valAlarmaTemperatura})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
-            if (vitalSigns.valAlarmaTemperaturaMin !== null && vitalSigns.temperaturaCorporala < vitalSigns.valAlarmaTemperaturaMin) {
-              newData.alerts.push({
-                id: Date.now() + 7,
-                type: 'warning',
-                message: `Low body temperature: ${vitalSigns.temperaturaCorporala}°C (min: ${vitalSigns.valAlarmaTemperaturaMin})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
+          if (vitalSigns.temperaturaCorporala !== null && vitalSigns.temperaturaCorporala !== 0) {
+            newData.semneVitale.temperaturaCorporala.data.push(vitalSigns.temperaturaCorporala);
+            newData.semneVitale.temperaturaCorporala.labels.push(timestamp);
           }
           
           // Update weight
-          if (vitalSigns.greutate !== null) {
-            newData.vitalSigns.weight.data.push(vitalSigns.greutate);
-            newData.vitalSigns.weight.labels.push(timestamp);
-            
-            // Check weight alerts
-            if (vitalSigns.greutate > vitalSigns.valAlarmaGreutate) {
-              newData.alerts.push({
-                id: Date.now() + 8,
-                type: 'warning',
-                message: `High weight: ${vitalSigns.greutate} kg (max: ${vitalSigns.valAlarmaGreutate})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
-            if (vitalSigns.valAlarmaGreutateMin !== null && vitalSigns.greutate < vitalSigns.valAlarmaGreutateMin) {
-              newData.alerts.push({
-                id: Date.now() + 9,
-                type: 'warning',
-                message: `Low weight: ${vitalSigns.greutate} kg (min: ${vitalSigns.valAlarmaGreutateMin})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
+          if (vitalSigns.greutate !== null && vitalSigns.greutate !== 0) {
+            newData.semneVitale.greutate.data.push(vitalSigns.greutate);
+            newData.semneVitale.greutate.labels.push(timestamp);
           }
           
           // Update ambient temperature
-          if (vitalSigns.temperaturaAmbientala !== null) {
-            newData.vitalSigns.ambientTemperature.data.push(vitalSigns.temperaturaAmbientala);
-            newData.vitalSigns.ambientTemperature.labels.push(timestamp);
-            
-            // Check ambient temperature alerts
-            if (vitalSigns.temperaturaAmbientala > vitalSigns.valAlarmaTemperaturaAmb) {
-              newData.alerts.push({
-                id: Date.now() + 10,
-                type: 'warning',
-                message: `High ambient temperature: ${vitalSigns.temperaturaAmbientala}°C (max: ${vitalSigns.valAlarmaTemperaturaAmb})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
-            if (vitalSigns.valAlarmaTemperaturaAmbMin !== null && vitalSigns.temperaturaAmbientala < vitalSigns.valAlarmaTemperaturaAmbMin) {
-              newData.alerts.push({
-                id: Date.now() + 11,
-                type: 'warning',
-                message: `Low ambient temperature: ${vitalSigns.temperaturaAmbientala}°C (min: ${vitalSigns.valAlarmaTemperaturaAmbMin})`,
-                date: vitalSigns.dataInregistrare
-              });
-            }
+          if (vitalSigns.temperaturaAmbientala !== null && vitalSigns.temperaturaAmbientala !== 0) {
+            newData.semneVitale.temperaturaAmbientala.data.push(vitalSigns.temperaturaAmbientala);
+            newData.semneVitale.temperaturaAmbientala.labels.push(timestamp);
           }
 
-          // Keep only the last 10 alerts
-          if (newData.alerts.length > 10) {
-            newData.alerts = newData.alerts.slice(-10);
-          }
+          // Keep only the last 10 data points for each vital sign
+          newData.semneVitale.ritmCardiac.data = newData.semneVitale.ritmCardiac.data.slice(-10);
+          newData.semneVitale.ritmCardiac.labels = newData.semneVitale.ritmCardiac.labels.slice(-10);
+          
+          newData.semneVitale.tensiuneArteriala.sistolica = newData.semneVitale.tensiuneArteriala.sistolica.slice(-10);
+          newData.semneVitale.tensiuneArteriala.diastolica = newData.semneVitale.tensiuneArteriala.diastolica.slice(-10);
+          newData.semneVitale.tensiuneArteriala.labels = newData.semneVitale.tensiuneArteriala.labels.slice(-10);
+          
+          newData.semneVitale.glicemie.data = newData.semneVitale.glicemie.data.slice(-10);
+          newData.semneVitale.glicemie.labels = newData.semneVitale.glicemie.labels.slice(-10);
+          
+          newData.semneVitale.temperaturaCorporala.data = newData.semneVitale.temperaturaCorporala.data.slice(-10);
+          newData.semneVitale.temperaturaCorporala.labels = newData.semneVitale.temperaturaCorporala.labels.slice(-10);
+          
+          newData.semneVitale.greutate.data = newData.semneVitale.greutate.data.slice(-10);
+          newData.semneVitale.greutate.labels = newData.semneVitale.greutate.labels.slice(-10);
+          
+          newData.semneVitale.temperaturaAmbientala.data = newData.semneVitale.temperaturaAmbientala.data.slice(-10);
+          newData.semneVitale.temperaturaAmbientala.labels = newData.semneVitale.temperaturaAmbientala.labels.slice(-10);
 
           return newData;
         });
-      } catch (error: any) {
-        console.error('Error fetching vital signs update:', error);
+      } catch (error) {
+        console.error('Error fetching vital signs:', error);
       }
-    }, 30000);
+    };
 
-    return () => clearInterval(updateInterval);
+    fetchVitalSigns();
+    const interval = setInterval(fetchVitalSigns, 5000);
+    return () => clearInterval(interval);
   }, [route.params.userId]);
 
   const chartConfig = {
     backgroundGradientFrom: '#ffffff',
     backgroundGradientTo: '#ffffff',
     color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-    strokeWidth: 2,
+    strokeWidth: 3,
     barPercentage: 0.5,
-    useShadowColorFromDataset: false
+    useShadowColorFromDataset: false,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    propsForLabels: {
+      fontSize: 12
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+    },
+    formatYLabel: (value: string) => {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue)) return value;
+      return numValue.toFixed(1);
+    },
+    formatXLabel: (value: string) => {
+      return value;
+    },
+    decimalPlaces: 1,
+    count: 5,
+    yAxisSuffix: '',
+    yAxisInterval: 1,
   };
 
   if (loading) {
@@ -235,7 +157,7 @@ const PatientDashboard: React.FC = () => {
   if (!patientData) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>No patient data available</Text>
+        <Text style={styles.errorText}>Nu există date disponibile pentru pacient</Text>
       </View>
     );
   }
@@ -244,203 +166,226 @@ const PatientDashboard: React.FC = () => {
     <ScrollView style={styles.container}>
       {/* Personal Information */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
+        <Text style={styles.sectionTitle}>Informații Personale</Text>
         <View style={styles.card}>
-          <Text style={styles.name}>{patientData.personalInfo.name}</Text>
+          <Text style={styles.name}>{patientData.personalInfo.nume}</Text>
           <Text style={styles.infoText}>Email: {patientData.personalInfo.email}</Text>
-          <Text style={styles.infoText}>Age: {patientData.personalInfo.age} years</Text>
-          <Text style={styles.infoText}>Gender: {patientData.personalInfo.gender}</Text>
-          <Text style={styles.infoText}>Blood Type: {patientData.personalInfo.bloodType}</Text>
+          <Text style={styles.infoText}>Vârstă: {patientData.personalInfo.varsta} ani</Text>
+          <Text style={styles.infoText}>Gen: {patientData.personalInfo.gen}</Text>
+          <Text style={styles.infoText}>Grupa Sanguină: {patientData.personalInfo.grupaSanguina}</Text>
           
-          <Text style={styles.subtitle}>Allergies:</Text>
-          {patientData.personalInfo.allergies.map((allergy, index) => (
+          <Text style={styles.subtitle}>Alergii:</Text>
+          {patientData.personalInfo.alergii.map((allergy, index) => (
             <Text key={index} style={styles.infoText}>• {allergy}</Text>
           ))}
           
-          <Text style={styles.subtitle}>Chronic Conditions:</Text>
-          {patientData.personalInfo.chronicConditions.map((condition, index) => (
+          <Text style={styles.subtitle}>Condiții Cronice:</Text>
+          {patientData.personalInfo.conditiiCronice.map((condition, index) => (
             <Text key={index} style={styles.infoText}>• {condition}</Text>
           ))}
           
-          <Text style={styles.subtitle}>Emergency Contact:</Text>
-          <Text style={styles.infoText}>Name: {patientData.personalInfo.emergencyContact.name}</Text>
-          <Text style={styles.infoText}>Relationship: {patientData.personalInfo.emergencyContact.relationship}</Text>
-          <Text style={styles.infoText}>Phone: {patientData.personalInfo.emergencyContact.phone}</Text>
+          <Text style={styles.subtitle}>Contact Urgent:</Text>
+          <Text style={styles.infoText}>Nume: {patientData.personalInfo.contactUrgent.nume}</Text>
+          <Text style={styles.infoText}>Relație: {patientData.personalInfo.contactUrgent.relatie}</Text>
+          <Text style={styles.infoText}>Telefon: {patientData.personalInfo.contactUrgent.telefon}</Text>
         </View>
       </View>
 
       {/* Vital Signs */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Vital Signs</Text>
+        <Text style={styles.sectionTitle}>Semne Vitale</Text>
         
         {/* Heart Rate */}
         <View style={styles.card}>
-          <Text style={styles.subtitle}>Heart Rate</Text>
-          {patientData.vitalSigns.heartRate.data.length > 0 ? (
+          <Text style={styles.subtitle}>Ritm Cardiac</Text>
+          {patientData.semneVitale.ritmCardiac.data.length > 0 ? (
             <LineChart
               data={{
-                labels: patientData.vitalSigns.heartRate.labels,
+                labels: patientData.semneVitale.ritmCardiac.labels,
                 datasets: [{
-                  data: patientData.vitalSigns.heartRate.data
+                  data: patientData.semneVitale.ritmCardiac.data,
+                  color: (opacity = 1) => `rgba(255, 99, 132, ${opacity})`,
                 }]
               }}
               width={screenWidth - 40}
               height={220}
-              chartConfig={chartConfig}
+              chartConfig={{
+                ...chartConfig,
+                yAxisSuffix: ' bpm'
+              }}
               bezier
               style={styles.chart}
             />
           ) : (
-            <Text style={styles.noDataText}>No heart rate data available</Text>
+            <Text style={styles.noDataText}>Nu există date pentru ritmul cardiac</Text>
           )}
         </View>
 
         {/* Blood Pressure */}
         <View style={styles.card}>
-          <Text style={styles.subtitle}>Blood Pressure</Text>
-          {patientData.vitalSigns.bloodPressure.systolic.length > 0 ? (
+          <Text style={styles.subtitle}>Tensiune Arterială</Text>
+          {patientData.semneVitale.tensiuneArteriala.sistolica.length > 0 ? (
             <LineChart
               data={{
-                labels: patientData.vitalSigns.bloodPressure.labels,
+                labels: patientData.semneVitale.tensiuneArteriala.labels,
                 datasets: [
                   {
-                    data: patientData.vitalSigns.bloodPressure.systolic,
-                    color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                    data: patientData.semneVitale.tensiuneArteriala.sistolica,
+                    color: (opacity = 1) => `rgba(255, 99, 132, ${opacity})`,
                     strokeWidth: 2
                   },
                   {
-                    data: patientData.vitalSigns.bloodPressure.diastolic,
-                    color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+                    data: patientData.semneVitale.tensiuneArteriala.diastolica,
+                    color: (opacity = 1) => `rgba(54, 162, 235, ${opacity})`,
                     strokeWidth: 2
                   }
                 ]
               }}
               width={screenWidth - 40}
               height={220}
-              chartConfig={chartConfig}
+              chartConfig={{
+                ...chartConfig,
+                yAxisSuffix: ' mmHg'
+              }}
               bezier
               style={styles.chart}
             />
           ) : (
-            <Text style={styles.noDataText}>No blood pressure data available</Text>
+            <Text style={styles.noDataText}>Nu există date pentru tensiune arterială</Text>
           )}
         </View>
 
         {/* Blood Sugar */}
         <View style={styles.card}>
-          <Text style={styles.subtitle}>Blood Sugar</Text>
-          {patientData.vitalSigns.bloodSugar.data.length > 0 ? (
+          <Text style={styles.subtitle}>Glicemie</Text>
+          {patientData.semneVitale.glicemie.data.length > 0 ? (
             <LineChart
               data={{
-                labels: patientData.vitalSigns.bloodSugar.labels,
+                labels: patientData.semneVitale.glicemie.labels,
                 datasets: [{
-                  data: patientData.vitalSigns.bloodSugar.data
+                  data: patientData.semneVitale.glicemie.data,
+                  color: (opacity = 1) => `rgba(75, 192, 192, ${opacity})`,
                 }]
               }}
               width={screenWidth - 40}
               height={220}
-              chartConfig={chartConfig}
+              chartConfig={{
+                ...chartConfig,
+                yAxisSuffix: ' mg/dL'
+              }}
               bezier
               style={styles.chart}
             />
           ) : (
-            <Text style={styles.noDataText}>No blood sugar data available</Text>
+            <Text style={styles.noDataText}>Nu există date pentru glicemie</Text>
           )}
         </View>
 
         {/* Body Temperature */}
         <View style={styles.card}>
-          <Text style={styles.subtitle}>Body Temperature</Text>
-          {patientData.vitalSigns.temperature.data.length > 0 ? (
+          <Text style={styles.subtitle}>Temperatură Corporală</Text>
+          {patientData.semneVitale.temperaturaCorporala.data.length > 0 ? (
             <LineChart
               data={{
-                labels: patientData.vitalSigns.temperature.labels,
+                labels: patientData.semneVitale.temperaturaCorporala.labels,
                 datasets: [{
-                  data: patientData.vitalSigns.temperature.data
+                  data: patientData.semneVitale.temperaturaCorporala.data,
+                  color: (opacity = 1) => `rgba(255, 159, 64, ${opacity})`,
                 }]
               }}
               width={screenWidth - 40}
               height={220}
-              chartConfig={chartConfig}
+              chartConfig={{
+                ...chartConfig,
+                yAxisSuffix: ' °C'
+              }}
               bezier
               style={styles.chart}
             />
           ) : (
-            <Text style={styles.noDataText}>No body temperature data available</Text>
+            <Text style={styles.noDataText}>Nu există date pentru temperatură corporală</Text>
           )}
         </View>
 
         {/* Weight */}
         <View style={styles.card}>
-          <Text style={styles.subtitle}>Weight</Text>
-          {patientData.vitalSigns.weight.data.length > 0 ? (
+          <Text style={styles.subtitle}>Greutate</Text>
+          {patientData.semneVitale.greutate.data.length > 0 ? (
             <LineChart
               data={{
-                labels: patientData.vitalSigns.weight.labels,
+                labels: patientData.semneVitale.greutate.labels,
                 datasets: [{
-                  data: patientData.vitalSigns.weight.data
+                  data: patientData.semneVitale.greutate.data,
+                  color: (opacity = 1) => `rgba(153, 102, 255, ${opacity})`,
                 }]
               }}
               width={screenWidth - 40}
               height={220}
-              chartConfig={chartConfig}
+              chartConfig={{
+                ...chartConfig,
+                yAxisSuffix: ' kg'
+              }}
               bezier
               style={styles.chart}
             />
           ) : (
-            <Text style={styles.noDataText}>No weight data available</Text>
+            <Text style={styles.noDataText}>Nu există date pentru greutate</Text>
           )}
         </View>
 
         {/* Ambient Temperature */}
         <View style={styles.card}>
-          <Text style={styles.subtitle}>Ambient Temperature</Text>
-          {patientData.vitalSigns.ambientTemperature.data.length > 0 ? (
+          <Text style={styles.subtitle}>Temperatură Ambientală</Text>
+          {patientData.semneVitale.temperaturaAmbientala.data.length > 0 ? (
             <LineChart
               data={{
-                labels: patientData.vitalSigns.ambientTemperature.labels,
+                labels: patientData.semneVitale.temperaturaAmbientala.labels,
                 datasets: [{
-                  data: patientData.vitalSigns.ambientTemperature.data
+                  data: patientData.semneVitale.temperaturaAmbientala.data,
+                  color: (opacity = 1) => `rgba(201, 203, 207, ${opacity})`,
                 }]
               }}
               width={screenWidth - 40}
               height={220}
-              chartConfig={chartConfig}
+              chartConfig={{
+                ...chartConfig,
+                yAxisSuffix: ' °C'
+              }}
               bezier
               style={styles.chart}
             />
           ) : (
-            <Text style={styles.noDataText}>No ambient temperature data available</Text>
+            <Text style={styles.noDataText}>Nu există date pentru temperatură ambientală</Text>
           )}
         </View>
       </View>
 
       {/* Medical Recommendations */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Medical Recommendations</Text>
-        {patientData.medicalRecommendations.map((recommendation) => (
+        <Text style={styles.sectionTitle}>Recomandări Medicale</Text>
+        {patientData.recomandariMedicale.map((recommendation) => (
           <View key={recommendation.id} style={styles.card}>
-            <Text style={styles.date}>{recommendation.date}</Text>
-            <Text style={styles.doctor}>{recommendation.doctor}</Text>
-            <Text style={styles.recommendation}>{recommendation.recommendation}</Text>
+            <Text style={styles.date}>{recommendation.data}</Text>
+            <Text style={styles.doctor}>{recommendation.medic}</Text>
+            <Text style={styles.recommendation}>{recommendation.recomandare}</Text>
           </View>
         ))}
       </View>
 
       {/* Alerts */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Alerts</Text>
-        {patientData.alerts.map((alert) => (
+        <Text style={styles.sectionTitle}>Alerte</Text>
+        {patientData.alerte.map((alert) => (
           <View key={alert.id} style={[styles.card, styles.warningAlert]}>
-            <Text style={styles.alertDate}>{alert.date}</Text>
-            <Text style={styles.alertMessage}>{alert.message}</Text>
+            <Text style={styles.alertDate}>{alert.data}</Text>
+            <Text style={styles.alertMessage}>{alert.mesaj}</Text>
           </View>
         ))}
       </View>
 
       {/* Contact Doctor Button */}
       <TouchableOpacity style={styles.contactButton}>
-        <Text style={styles.contactButtonText}>Contact Doctor</Text>
+        <Text style={styles.contactButtonText}>Contactează Medicul</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -463,7 +408,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: 'red',
+    color: '#FF3B30',
   },
   section: {
     padding: 20,
@@ -472,39 +417,41 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#333',
+    color: '#007AFF',
   },
   card: {
     backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 15,
+    padding: 20,
     marginBottom: 15,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
+    marginBottom: 12,
+    color: '#007AFF',
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    marginBottom: 10,
-    color: '#444',
+    marginBottom: 12,
+    color: '#007AFF',
   },
   infoText: {
     fontSize: 16,
-    color: '#666',
-    marginBottom: 5,
+    color: '#333',
+    marginBottom: 8,
   },
   chart: {
     marginVertical: 8,
     borderRadius: 16,
+    padding: 10,
+    backgroundColor: '#fff',
   },
   date: {
     fontSize: 14,
@@ -532,7 +479,7 @@ const styles = StyleSheet.create({
   },
   warningAlert: {
     borderLeftWidth: 4,
-    borderLeftColor: '#ff9500',
+    borderLeftColor: '#FF9500',
   },
   contactButton: {
     backgroundColor: '#007AFF',
@@ -540,6 +487,11 @@ const styles = StyleSheet.create({
     padding: 15,
     margin: 20,
     alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
   contactButtonText: {
     color: 'white',
@@ -551,6 +503,7 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     padding: 20,
+    fontStyle: 'italic',
   },
 });
 
