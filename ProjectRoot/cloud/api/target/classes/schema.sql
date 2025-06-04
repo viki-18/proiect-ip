@@ -16,12 +16,7 @@ CREATE TABLE Utilizatori (
     email VARCHAR(30) UNIQUE NOT NULL,
     nr_telefon CHAR(12) UNIQUE NOT NULL,
     Tip_utilizator CHAR(1) NOT NULL,
-    parola VARCHAR(60) NOT NULL,
-    nume VARCHAR(50),
-    prenume VARCHAR(50),
-    varsta INT,
-    gen CHAR(1),
-    specializare VARCHAR(100)
+    parola VARCHAR(60) NOT NULL
 );
 
 -- Create Administratori table
